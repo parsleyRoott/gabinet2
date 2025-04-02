@@ -438,3 +438,79 @@ document.addEventListener('DOMContentLoaded', function() {
     // Obsługa zdarzenia załadowania wszystkich obrazów
     window.addEventListener('load', updateSliderWidth);
 });
+
+// Funkcja do ustawienia nieskończonego przewijania logotypów
+function setupInfinitePartnerScroll() {
+    const partnersContainer = document.querySelector('.partners-container');
+    const partnersSlider = document.querySelector('.partners-slider');
+
+    if (!partnersSlider) return;
+
+    // 1. Klonujemy zawartość slidera
+    const originalItems = partnersSlider.innerHTML;
+    partnersSlider.innerHTML = originalItems + originalItems;
+
+    // 2. Mierzymy całkowitą szerokość pojedynczego zestawu logotypów
+    let sliderItemWidth = 0;
+    const logos = document.querySelectorAll('.partner-logo');
+
+    // Obliczamy szerokość pierwszej połowy elementów (oryginalne elementy)
+    const originalLogosCount = logos.length / 2;
+    for (let i = 0; i < originalLogosCount; i++) {
+        const style = window.getComputedStyle(logos[i]);
+        const width = logos[i].offsetWidth;
+        const marginLeft = parseInt(style.marginLeft);
+        const marginRight = parseInt(style.marginRight);
+        sliderItemWidth += width + marginLeft + marginRight;
+    }
+
+    // 3. Ustawiamy animację CSS z dokładną szerokością
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+        @keyframes infiniteScroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-${sliderItemWidth}px);
+            }
+        }
+        
+        .partners-slider {
+            animation: infiniteScroll ${20 + logos.length}s linear infinite;
+        }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // 4. Obsługa najechania myszą - zatrzymanie/wznowienie animacji
+    partnersSlider.addEventListener('mouseenter', () => {
+        partnersSlider.style.animationPlayState = 'paused';
+    });
+
+    partnersSlider.addEventListener('mouseleave', () => {
+        partnersSlider.style.animationPlayState = 'running';
+    });
+}
+
+// Inicjalizacja po pełnym załadowaniu strony
+window.addEventListener('load', setupInfinitePartnerScroll);
+
+// Footer navigation smooth scroll
+// Sprawdz czy jest róznica
+// document.querySelectorAll('.footer-nav a[href^="#"]').forEach(anchor => {
+//     anchor.addEventListener('click', function(e) {
+//         e.preventDefault();
+//
+//         const targetId = this.getAttribute('href');
+//
+//         // Skip if it's just a "#" link
+//         if (targetId === '#') return;
+//
+//         const targetSection = document.querySelector(targetId);
+//
+//         window.scrollTo({
+//             top: targetSection.offsetTop - 80,
+//             behavior: 'smooth'
+//         });
+//     });
+// });
