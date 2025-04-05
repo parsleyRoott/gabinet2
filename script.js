@@ -514,3 +514,27 @@ window.addEventListener('load', setupInfinitePartnerScroll);
 //         });
 //     });
 // });
+
+// Obsługa rozwijanych kategorii w cenniku
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryHeaders = document.querySelectorAll('.category-header');
+
+    categoryHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            // Przełącz stan aktywny dla klikniętego nagłówka
+            this.classList.toggle('active');
+
+            // Opcjonalnie: zamknij inne kategorie, gdy otwierasz nową
+            // categoryHeaders.forEach(otherHeader => {
+            //     if (otherHeader !== header) {
+            //         otherHeader.classList.remove('active');
+            //     }
+            // });
+        });
+    });
+
+    // // Domyślnie otwórz pierwszą kategorię
+    // if (categoryHeaders.length > 0) {
+    //     categoryHeaders[0].classList.add('active');
+    // }
+});
